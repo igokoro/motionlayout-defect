@@ -11,19 +11,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val stage: MotionLayout = findViewById(R.id.header)
+        val scene: MotionLayout = findViewById(R.id.scene)
         if (progress > 0) {
-            stage.progress = progress
-
-            Log.d(
-                "motion_v",
-                "onCreate: constraint set start == end ${stage.getConstraintSet(R.id.start) == stage.getConstraintSet(
-                    R.id.end
-                )}"
-            )
+            scene.progress = progress
         }
 
-        stage.setTransitionListener(object : TransitionAdapter() {
+        scene.setTransitionListener(object : TransitionAdapter() {
             override fun onTransitionStarted(
                 motionLayout: MotionLayout?,
                 startId: Int,
@@ -31,20 +24,24 @@ class MainActivity : AppCompatActivity() {
             ) {
                 Log.d(
                     "motion_v",
-                    "onTransitionStarted() called with: startId = $startId, endId = $endId"
+                    "onTransitionStarted() called with: startId = ${resName(startId)}, " +
+                            "endId = ${resName(endId)}"
                 )
             }
 
             override fun onTransitionCompleted(motionLayout: MotionLayout, currentId: Int) {
                 Log.d(
                     "motion_v",
-                    "onTransitionCompleted() called with: currentId = $currentId; progress = ${motionLayout.progress}"
+                    "onTransitionCompleted() called with: currentId = ${resName(currentId)}; " +
+                            "progress = ${motionLayout.progress}"
                 )
                 state = currentId
                 progress = motionLayout.progress
             }
         })
     }
+
+    fun resName(id: Int): String = "R.id.${resources.getResourceEntryName(id)}"
 
     companion object {
         var state = -1
